@@ -33,6 +33,7 @@ void main()
 	Bspline<Vector3, 3> splines[3] = { tut1_s_1, tut1_s_2, tut1_s_3 };
 	Bsurface<3> tut1_surf(splines);
 
+	std::cout << "PascalTest: " << meta::Pascal<13,5>::value << std::endl;
 
 	std::cout << "Surface" << std::endl;
 	std::cout << "(0,0): " << tut1_surf.at(0, 0) << std::endl;

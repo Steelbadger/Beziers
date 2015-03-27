@@ -85,6 +85,7 @@
   <ItemGroup>
     <ClInclude Include="Bspline.h" />
     <ClInclude Include="Bsurface.h" />
+    <ClInclude Include="DefPascal.h" />
     <ClInclude Include="Pascal.h" />
     <ClInclude Include="SplineInterface.h" />
     <ClInclude Include="Vector2.h" />

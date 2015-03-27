@@ -40,14 +40,14 @@ public:
 		Vector3 tangent1 = { 0, 0, 0 };
 		Vector3 tangent2 = { 0, 0, 0 };
 		Vector3 norm;
-		Pascal<order> pascal;
+		Pascal<order> pascals;
 		for (size_t i = 0; i < order; ++i)
 		{
 			int power1 = (order - 1) - i;
 			int power2 = (order - 1) - (order - 1 - i);
 			float one_mulp = pow(1 - u, power1);
 			float sec_mulp = pow(u, power2);
-			float pasc = pascal(i);
+			float pasc = pascals(i);
 
 			tangent1 += control_splines[i].tangent(v) * (pasc * one_mulp * sec_mulp);
 			tangent2 += control_splines[i].at(u) * (pasc * pow(v, power1) * -power2 * pow(1 - v, power2 - 1) + pow(1 - v, power2) * pasc * power1 * pow(v, power1 - 1));

@@ -44,5 +44,8 @@
     <ClInclude Include="SplineInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DefPascal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
