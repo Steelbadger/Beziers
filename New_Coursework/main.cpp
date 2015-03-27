@@ -46,11 +46,25 @@ void main()
 	std::cout << "(0.5,0): " << tut1_surf.at(0.5, 0) << std::endl;
 	std::cout << "(0.5,0.5): " << tut1_surf.at(0.5, 0.5) << std::endl << std::endl;
 
+	std::cout << "Normals:" << std::endl;
+	std::cout << "(0, 0): " << tut1_surf.normal(0, 0) << std::endl << std::endl;
+
 	SplineInterface<Vector3>* temp = (SplineInterface<Vector3>*)&my_spline;
 	std::cout << "Testing Temp" << std::endl;
 	std::cout << "Start: " << temp->at(0.0f) << std::endl;
 	std::cout << "Half: " << temp->at(0.5f) << std::endl;
 	std::cout << "End: " << temp->at(1.0f) << std::endl << std::endl;
+
+
+	Vector3 norm_1[3] = { Vector3(0, 0, 0), Vector3(1, 0, 0), Vector3(2, 0, 0) };
+	Vector3 norm_2[3] = { Vector3(0, 1, 0), Vector3(1, 1, 0), Vector3(2, 1, 0) };
+	Vector3 norm_3[3] = { Vector3(0, 2, 0), Vector3(1, 2, 0), Vector3(2, 2, 0) };
+
+	Bspline<Vector3, 3> norm_splines[3] = { norm_1, norm_2, norm_3 };
+	Bsurface<3> norm_surf(norm_splines);
+
+	std::cout << "Test Normals: " << std::endl;
+	std::cout << "(0.43, 0.87)" << norm_surf.normal(0.43f, 0.87f) << std::endl;
 
 }
 

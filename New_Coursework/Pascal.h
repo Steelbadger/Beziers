@@ -1,5 +1,5 @@
 #pragma once
-
+#include<vector>
 
 
 namespace meta
@@ -41,6 +41,30 @@ namespace meta
 };
 
 
+class LamePascal
+{
+public:
+	LamePascal(){}
+	LamePascal(size_t row)
+	{
+		vals.resize(row, 1);
+		for (size_t i = 1; i < row; ++i) {
+			vals[i] = vals[i - 1] * ((row)-i) / float(i);
+		}
+	}
+
+	~LamePascal(){};
+
+
+	inline const unsigned int operator()(size_t element) const
+	{
+		return vals[element];
+	}
+private:
+	std::vector<unsigned int> vals;
+};
+
+
 template<size_t row>
 class Pascal
 {
@@ -71,3 +95,24 @@ unsigned int Pascal<row>::row_vals[row] = { 1 };
 
 template<size_t row>
 bool Pascal<row>::initialised = false;
+
+
+template<size_t rows>
+class PascalTriangle
+{
+public:
+	PascalTriangle(){
+		for (size_t i = 0; i < rows; ++i) {
+			all_rows[i] = LamePascal(i + 1);
+		}
+	}
+	~PascalTriangle() {}
+
+	inline const LamePascal& operator()(size_t element) const
+	{
+		return all_rows[element];
+	}
+
+private:
+	LamePascal all_rows[rows];
+};
