@@ -43,12 +43,40 @@ public:
 		Pascal<ORDER> pascal;
 		for (size_t i = 0; i < ORDER; ++i)
 		{ 
+			
 
 			int power1 = (ORDER - 1) - i;
 			int power2 = (ORDER - 1) - (ORDER - 1 - i);
 			float pasc = pascal(i);
 
 			output += control_points[i] * (pasc * pow(t, power1) * -power2 * pow(1 - t, power2 - 1) + pow(1 - t, power2) * pasc * power1 * pow(t, power1 - 1));
+		}
+		return output;
+	}
+
+	T differential(const float& t) const
+	{
+		T output;
+		output = output * 0.0f;
+		
+		Pascal<ORDER> pascal;
+		for (int i = 0; i < ORDER; ++i) {
+
+			// differentiate using product rule
+			float v1 = pow(t,i);
+			float v2 = pow(1 - t, spline_order - i - 2);
+			float v3 = i - spline_order + 1;
+			float v4 = i * pow(t, i - 1);
+			float v5 = pow(1 - t, spline_order - i - 1);
+
+			// Two product protions, cut out zeroes as it breaks things.
+			float second = ((i == 0.0f) ? 0.0f : v4*v5);
+			float first = ((i == spline_order - 1) ? 0.0f : v1*v2*v3);
+
+			// find value of this entry and add to the result
+			T temp = control_points[i] * pascal(i)* (first + second);
+
+			output += temp;
 		}
 		return output;
 	}
@@ -79,5 +107,5 @@ public:
 	}
 private:
 	T control_points[ORDER];
-	static const size_t spline_order = ORDER;
+	static const int spline_order = ORDER;
 };

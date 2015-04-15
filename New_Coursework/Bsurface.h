@@ -42,26 +42,33 @@ public:
 		Vector3 tangent2 = { 0, 0, 0 };
 		Vector3 norm;
 		Pascal<order> pascals;
-		static const PascalTriangle<order> pascl;
-		for (size_t i = 0; i < order; ++i)
+		for (int i = 0; i < order; ++i)
 		{
 			int power1 = (order - 1) - i;
-			int power2 = i;
-			float one_mulp = pow(1 - u, power1);
-			float sec_mulp = pow(u, power2);
+			int power2 = (order - 1) - (order - 1 - i);
 			float pasc = pascals(i);
 
-			int pow_single = i;
-			int pow_brack = (order - 1) - i;
-			float u_mul= 0.0f;
+			float fir = (power2 == 0) ? 0.0f : pow(u, power1) * -power2 * pow(1 - u, power2 - 1);
+			float sec = (power1 == 0) ? 0.0f : pow(1 - u, power2) * power1 * pow(u, power1 - 1);
 
-			for (size_t j = 0; j <= pow_brack; ++j)
-			{
-				u_mul += (j + pow_single) * pascl(pow_brack)(j)*(j % 2 ? -1 : 1)*pow(u, j + pow_single - 1);
-			}
 
-			tangent1 += control_splines[i].at(v)*u_mul;
-			tangent2 += control_splines[i].dif(v) * (pasc * one_mulp * sec_mulp);
+
+			tangent1 += control_splines[i].differential(v) * pasc * (fir + sec);
+
+
+			// differentiate using product rule
+			float v1 = pow(u, i);
+			float v2 = pow(1 - u, int(order) - i - 2);
+			float v3 = i - int(order) + 1;
+			float v4 = i * pow(u, i - 1);
+			float v5 = pow(1 - u, int(order) - i - 1);
+
+			// Two product protions, cut out zeroes as it breaks things.
+			float second = ((i == 0.0f) ? 0.0f : v4*v5);
+			float first = ((i == int(order) - 1) ? 0.0f : v1*v2*v3);
+
+			// find value of this entry and add to the result
+			tangent2 += control_splines[i].at(v) * pascals(i)* (first + second);
 		}
 		return Cross(tangent1, tangent2).Normalize();
 	}

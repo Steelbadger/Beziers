@@ -13,9 +13,10 @@ void main()
 
 	std::cout << "Vector3" << std::endl;
 	std::cout << "Start: " << my_spline.at(0.0f) << std::endl;
-	std::cout << "Half: " << my_spline.at(0.5f) << std::endl;
+	std::cout << "0.25: " << my_spline.at(0.25f) << std::endl;
 	std::cout << "End: " << my_spline.at(1.0f) << std::endl;
-	std::cout << "Tangent at 0: " << my_spline.tangent(0.0f) << std::endl;
+	std::cout << "Tangent at 0: " << my_spline.dif(0.25f) << std::endl;
+	std::cout << "Differential at 0.1: " << my_spline.differential(0.1f) << std::endl;
 	std::cout << "Expected: " << Vector3(0.0f, 0.5f, 0.0f) - Vector3(0.0f, 0.0f, 0.0f) << std::endl << std::endl;
 
 
@@ -33,7 +34,15 @@ void main()
 	Bspline<Vector3, 3> splines[3] = { tut1_s_1, tut1_s_2, tut1_s_3 };
 	Bsurface<3> tut1_surf(splines);
 
-	std::cout << "PascalTest: " << meta::Pascal<13,5>::value << std::endl;
+	Pascal<1> first;
+	Pascal<2> second;
+	Pascal<3> third;
+	Pascal<4> fourth;
+	first(0);
+	std::cout << "\t\t\t" << first(0) << std::endl;
+	std::cout << "\t\t" << second(0) << "\t\t" << second(1) << std::endl;
+	std::cout << "\t" << third(0) << "\t\t" << third(1) << "\t\t" << third(2) << std::endl;
+	std::cout << "" << fourth(0) << "\t\t" << fourth(1) << "\t\t" << fourth(2) << "\t\t" << fourth(3) << std::endl;
 
 	std::cout << "Surface" << std::endl;
 	std::cout << "(0,0): " << tut1_surf.at(0, 0) << std::endl;
@@ -47,7 +56,7 @@ void main()
 	std::cout << "(0.5,0.5): " << tut1_surf.at(0.5, 0.5) << std::endl << std::endl;
 
 	std::cout << "Normals:" << std::endl;
-	std::cout << "(0, 0): " << tut1_surf.normal(0, 0) << std::endl << std::endl;
+	std::cout << "(0, 0): " << tut1_surf.normal(0.2, 0.3) << std::endl << std::endl;
 
 	SplineInterface<Vector3>* temp = (SplineInterface<Vector3>*)&my_spline;
 	std::cout << "Testing Temp" << std::endl;
@@ -64,7 +73,7 @@ void main()
 	Bsurface<3> norm_surf(norm_splines);
 
 	std::cout << "Test Normals: " << std::endl;
-	std::cout << "(0.43, 0.87)" << norm_surf.normal(0.43f, 0.87f) << std::endl;
+	std::cout << "(0.43, 0.88)" << norm_surf.normal(0.43f, 0.88f) << std::endl;
 
 }
 
