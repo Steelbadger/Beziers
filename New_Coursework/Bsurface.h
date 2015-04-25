@@ -2,8 +2,17 @@
 #include "Bspline.h"
 #include "Vector3.h"
 
+
+class BSurfaceInterface
+{
+public:
+	virtual Vector3 at(const float& u, const float&v) const = 0;
+	virtual Vector3 normal(const float& u, const float& v) const = 0;
+	virtual const unsigned int ord() const = 0;
+};
+
 template<size_t order = 3>
-class Bsurface
+class Bsurface : public BSurfaceInterface
 {
 public:
 	Bsurface(Bspline<Vector3, order> controls[order])
@@ -17,7 +26,7 @@ public:
 
 	~Bsurface(){}
 
-	Vector3 at(float u, float v)
+	Vector3 at(const float& u,const float& v) const
 	{
 		Vector3 output(0.0f, 0.0f, 0.0f);
 		Pascal<order> pascal;
@@ -36,7 +45,7 @@ public:
 		return output;
 	}
 
-	Vector3 normal(float u, float v)
+	Vector3 normal(const float& u,const float& v) const
 	{
 		Vector3 tangent1 = { 0, 0, 0 };
 		Vector3 tangent2 = { 0, 0, 0 };
@@ -71,6 +80,11 @@ public:
 			tangent2 += control_splines[i].at(v) * pascals(i)* (first + second);
 		}
 		return Cross(tangent1, tangent2).Normalize();
+	}
+
+	const unsigned int ord() const
+	{
+		return order;
 	}
 
 private:

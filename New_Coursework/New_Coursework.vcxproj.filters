@@ -47,5 +47,8 @@
     <ClInclude Include="DefPascal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Bvolume.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -79,3 +79,9 @@ inline Vector3 Cross(const Vector3 &lhs, const Vector3 &rhs)
 	return Vector3(lhs.y * rhs.z - lhs.z * rhs.y, lhs.z * rhs.x - lhs.x * rhs.z, lhs.x * rhs.y - lhs.y * rhs.x); 
 }
 
+inline Vector3 Normal(const Vector3& v1, const Vector3& v2, const Vector3& v3)
+{
+	Vector3 vec1 = v2 - v1;
+	Vector3 vec2 = v3 - v1;
+	return Cross(vec1, vec2).Normalize();
+}
