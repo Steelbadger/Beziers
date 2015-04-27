@@ -38,7 +38,7 @@ public:
 
 			float one_mulp = pow(1 - u, power1);
 			float sec_mulp = pow(u, power2);
-			float pasc = pascal(i);
+			float pasc = static_cast<float>(pascal(i));
 
 			output = output + control_splines[i].at(v) * pasc * one_mulp * sec_mulp;
 		}
@@ -55,7 +55,7 @@ public:
 		{
 			int power1 = (order - 1) - i;
 			int power2 = (order - 1) - (order - 1 - i);
-			float pasc = pascals(i);
+			float pasc = static_cast<float>(pascals(i));
 
 			float fir = (power2 == 0) ? 0.0f : pow(u, power1) * -power2 * pow(1 - u, power2 - 1);
 			float sec = (power1 == 0) ? 0.0f : pow(1 - u, power2) * power1 * pow(u, power1 - 1);
@@ -68,7 +68,7 @@ public:
 			// differentiate using product rule
 			float v1 = pow(u, i);
 			float v2 = pow(1 - u, int(order) - i - 2);
-			float v3 = i - int(order) + 1;
+			float v3 = static_cast<float>(i - int(order) + 1);
 			float v4 = i * pow(u, i - 1);
 			float v5 = pow(1 - u, int(order) - i - 1);
 
@@ -77,7 +77,7 @@ public:
 			float first = ((i == int(order) - 1) ? 0.0f : v1*v2*v3);
 
 			// find value of this entry and add to the result
-			tangent2 += control_splines[i].at(v) * pascals(i)* (first + second);
+			tangent2 += control_splines[i].at(v) * pasc * (first + second);
 		}
 		return Cross(tangent1, tangent2).Normalize();
 	}

@@ -29,6 +29,7 @@ int pSel = 0;
 int sSel = 0;
 int fSel = 0;
 float rotation = 0.0f;
+float xrot = 0.0f;
 int showPoints = 0;
 float d = 3.0f;
 float r = d / 2.0f;
@@ -101,8 +102,8 @@ void CreateTriangles(const BSurfaceInterface* surf, size_t divisions)
 	std::vector<Vector3> triangles;
 	std::vector<Vector3> norms;
 
-	for (int i = 0; i < divisions ; i++) {
-		for (int j = 0; j < divisions ; j++) {
+	for (size_t i = 0; i < divisions ; i++) {
+		for (size_t j = 0; j < divisions; j++) {
 			triangles.push_back(points[i + j*divisions]);
 			triangles.push_back(points[1 + i + (1 + j)*divisions]);
 			triangles.push_back(points[i + (1 + j)*divisions]);
@@ -133,12 +134,12 @@ void CreateTriangles(const BVolumeInterface* surf, std::vector<Vector3> fpoints)
 	std::vector<Vector3> points;
 	for (auto i = fpoints.begin(); i != fpoints.end(); ++i)
 	{
-		points.push_back(surf->at(i->x+0.5, i->y+0.5, i->z+0.5));
+		points.push_back(surf->at(i->x, i->y, i->z));
 	}
 
 	std::vector<Vector3> norms;
 
-	for (int i = 0; i < points.size(); i += 3){
+	for (size_t i = 0; i < points.size(); i += 3){
 		Vector3 f1 = Normal(points[i], points[i+1], points[i+2]);
 		norms.push_back(f1);
 		norms.push_back(f1);
@@ -216,10 +217,10 @@ void TestVolume()
 
 	Bvolume<ORDER> norm_vol(norm_surf);
 
-	std::cout << "result at 0.0, 0.0, 0.0: " << norm_vol.at(0.0f, 0.0f, 0.0f) << std::endl;
-	std::cout << "result at 1.0, 0.0, 0.0: " << norm_vol.at(1.0f, 0.0f, 0.0f) << std::endl;
-	std::cout << "result at 0.0, 1.0, 0.0: " << norm_vol.at(0.0f, 1.0f, 0.0f) << std::endl;
-	std::cout << "result at 0.0, 0.0, 1.0: " << norm_vol.at(0.0f, 0.0f, 1.0f) << std::endl;
+	//std::cout << "result at 0.0, 0.0, 0.0: " << norm_vol.at(0.0f, 0.0f, 0.0f) << std::endl;
+	//std::cout << "result at 1.0, 0.0, 0.0: " << norm_vol.at(1.0f, 0.0f, 0.0f) << std::endl;
+	//std::cout << "result at 0.0, 1.0, 0.0: " << norm_vol.at(0.0f, 1.0f, 0.0f) << std::endl;
+	//std::cout << "result at 0.0, 0.0, 1.0: " << norm_vol.at(0.0f, 0.0f, 1.0f) << std::endl;
 }
 
 
@@ -257,8 +258,10 @@ void init(void)
 	meshverts = SubDivide(meshverts);
 	meshverts = SubDivide(meshverts);
 	meshverts = SubDivide(meshverts);
+	meshverts = SubDivide(meshverts);
+//	meshverts = SubDivide(meshverts);
 	meshverts = Spherize(meshverts);
-	meshnorm = meshverts;
+//	meshnorm = meshverts;
 	init_volume();
 	RecalculateVolume();
 	TestVolume();
@@ -273,11 +276,12 @@ void display(void)
 	glPushMatrix();
 	glRotatef(330.0f, 1.0f, 0.0f, 0.0f);
 	glRotatef(rotation, 0.0f, 0.0f, 1.0f);
-	glScalef(0.25, 0.25, 0.25);
+	glRotatef(xrot, 1.0f, 0.0f, 0.0f);
+	glScalef(0.5, 0.5, 0.5);
 
 	glEnable(GL_LIGHTING);
 	glBegin(GL_TRIANGLES);
-	for (int i = 0; i < tris.size(); ++i) {
+	for (size_t i = 0; i < tris.size(); ++i) {
 		glVertex3fv((GLfloat*)&tris[i]);
 		glNormal3fv((GLfloat*)&norm[i]);
 	}
@@ -289,7 +293,7 @@ void display(void)
 		glPointSize(5.0);
 		glDisable(GL_LIGHTING);
 		glColor3f(1.0, 1.0, 0.0);
-		glScalef(2.0f, 2.0f, 2.0f);
+//		glScalef(2.0f, 2.0f, 2.0f);
 		glBegin(GL_POINTS);
 		for (int i = 0; i < ORDER; i++) {
 			for (int j = 0; j < ORDER; j++) {
@@ -424,6 +428,8 @@ void keyboard(unsigned char key, int x, int y)
 	case 'b':
 	case 'B':
 		init_volume();
+		rotation = 0.0f;
+		xrot = 0.0f;
 //		RecalculateSurface();
 		RecalculateVolume();
 		glutPostRedisplay();
@@ -434,6 +440,14 @@ void keyboard(unsigned char key, int x, int y)
 		break;
 	case '.':
 		rotation -= 5.0f;
+		glutPostRedisplay();
+		break;
+	case 'k':
+		xrot += 5.0f;
+		glutPostRedisplay();
+		break;
+	case 'l':
+		xrot -= 5.0f;
 		glutPostRedisplay();
 		break;
 	case ']':
@@ -673,7 +687,7 @@ std::vector<Vector3> SubDivide(std::vector<Vector3> m)
 	//  Now create a bunch of new faces (non indexed)
 	std::vector<Vector3> newPoints;
 
-	for (int i = 0; i < m.size(); i += 3) {
+	for (size_t i = 0; i < m.size(); i += 3) {
 		Vector3 p1 = m[i];
 		Vector3 p2 = m[i + 1];
 		Vector3 p3 = m[i + 2];
@@ -708,7 +722,7 @@ std::vector<Vector3> Spherize(std::vector<Vector3> m)
 	std::vector<Vector3> out;
 	for (auto i = m.begin(); i != m.end(); ++i)
 	{
-		out.push_back(i->Normalize());
+		out.push_back((i->Normalize()+1.0f)/2.0f);
 	}
 	return out;
 }

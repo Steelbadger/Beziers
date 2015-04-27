@@ -10,7 +10,7 @@ public:
 		if (!initialised) {
 			initialised = true;
 			for (size_t i = 1; i < row; ++i) {
-				row_vals[i] = row_vals[i - 1] * ((row) - i) / float(i);
+				row_vals[i] = static_cast<unsigned int>(row_vals[i - 1] * ((row) - i) / float(i));
 			}
 		}
 	}

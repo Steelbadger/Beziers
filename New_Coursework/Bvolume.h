@@ -37,7 +37,7 @@ public:
 
 			float one_mulp = pow(1 - u, power1);
 			float sec_mulp = pow(u, power2);
-			float pasc = pascal(i);
+			float pasc = static_cast<float>(pascal(i));
 
 			output = output + control_surfaces[i].at(v,s) * pasc * one_mulp * sec_mulp;
 		}
